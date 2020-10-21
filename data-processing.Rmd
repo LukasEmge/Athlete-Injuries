@@ -1,0 +1,64 @@
+---
+title: "data_processing"
+author: "Lukas Emge"
+date: "10/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(janitor)
+```
+
+```{r}
+data_defense <- read_csv("raw_data/2017Defense.csv", 
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data_offense <- read_csv("raw_data/2017Offense.csv",
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data <- full_join(data_defense, data_offense, by = c("rk", "year", "player", "pos", "av", "school", "college", "height", "wt", "x40yd", "vertical", "bench_reps", "broad_jump", "x3cone", "shuttle", "drafted_tm_rnd_yr"))
+
+
+
+write_rds(data, "Athlete-Injuries/data.rds")
+```
+
