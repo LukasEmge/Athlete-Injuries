@@ -9,11 +9,13 @@
 
 library(shiny)
 library(tidyverse)
+library(shinythemes)
 
+data <- read_rds("data.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-    
+    theme = shinytheme("cyborg"),
     navbarPage(
         "NFL Draft Combine Results",
         tabPanel("Testing Data",
