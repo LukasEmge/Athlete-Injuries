@@ -13,7 +13,7 @@ library(janitor)
 ```
 
 ```{r}
-data_defense <- read_csv("raw_data/2017Defense.csv", 
+data_defense2017 <- read_csv("raw_data/2017Defense.csv", 
                          col_types = cols(
   Rk = col_double(),
   Year = col_double(),
@@ -34,7 +34,7 @@ data_defense <- read_csv("raw_data/2017Defense.csv",
 )) %>% 
   clean_names()
 
-data_offense <- read_csv("raw_data/2017Offense.csv",
+data_offense2017 <- read_csv("raw_data/2017Offense.csv",
                          col_types = cols(
   Rk = col_double(),
   Year = col_double(),
@@ -55,10 +55,258 @@ data_offense <- read_csv("raw_data/2017Offense.csv",
 )) %>% 
   clean_names()
 
-data <- full_join(data_defense, data_offense, by = c("rk", "year", "player", "pos", "av", "school", "college", "height", "wt", "x40yd", "vertical", "bench_reps", "broad_jump", "x3cone", "shuttle", "drafted_tm_rnd_yr"))
 
 
+data2017 <- full_join(data_defense2017, data_offense2017, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
 
-write_rds(data, "Athlete-Injuries/data.rds")
+data_defense2016 <- read_csv("raw_data/2016Defense.csv", 
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data_offense2016 <- read_csv("raw_data/2016Offense.csv",
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data2016 <- full_join(data_defense2016, data_offense2016, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+data_defense2015 <- read_csv("raw_data/2015Defense.csv", 
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data_offense2015 <- read_csv("raw_data/2015Offense.csv",
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data2015 <- full_join(data_defense2015, data_offense2015, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+data_defense2014 <- read_csv("raw_data/2014Defense.csv", 
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data_offense2014 <- read_csv("raw_data/2014Offense.csv",
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data2014 <- full_join(data_defense2014, data_offense2014, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+data_defense2013 <- read_csv("raw_data/2013Defense.csv", 
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data_offense2013 <- read_csv("raw_data/2013Offense.csv",
+                         col_types = cols(
+  Rk = col_double(),
+  Year = col_double(),
+  Player = col_character(),
+  Pos = col_character(),
+  AV = col_double(),
+  School = col_character(),
+  College = col_character(),
+  Height = col_character(),
+  Wt = col_double(),
+  `40YD` = col_double(),
+  Vertical = col_double(),
+  BenchReps = col_double(),
+  `Broad Jump` = col_double(),
+  `3Cone` = col_double(),
+  Shuttle = col_double(),
+  `Drafted (tm/rnd/yr)` = col_character()
+)) %>% 
+  clean_names()
+
+data2013 <- full_join(data_defense2013, data_offense2013, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+data2017_2016 <- full_join(data2017, data2016, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+data2017_2016_2015 <- full_join(data2017_2016, data2015, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+data2017_2016_2015_2014 <- full_join(data2017_2016_2015, data2014, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+combine_data <- full_join(data2017_2016_2015_2014, data2013, 
+                      by = c("rk", "year", "player","pos", "av", "school", 
+                             "college", "height", "wt", "x40yd", "vertical", 
+                             "bench_reps", "broad_jump", "x3cone", "shuttle", 
+                             "drafted_tm_rnd_yr"))
+
+combine_data <- combine_data %>% 
+  separate(drafted_tm_rnd_yr,
+c("team", "round", "pick_number"), " / ") 
+
+combine_data <- combine_data %>% 
+  separate(pick_number, c("pick_#", "extra"), "th pick")
+
+combine_data <- combine_data %>% 
+  separate(`pick_#`, c("pick", "extra_1"), "st pick")
+
+combine_data <- combine_data %>% 
+  separate(pick, c("pick", "extra_2"), "nd pick")
+
+combine_data <- combine_data %>% 
+  separate(pick, c("pick", "extra_3"), "rd pick")
+
+combine_data <- combine_data %>% 
+  select(-"extra") %>% 
+  select(-"extra_1") %>% 
+  select(-"extra_2") %>% 
+  select(-"extra_3")
+  
+
+combine_data$pick <- as.numeric(as.character(combine_data$pick))
+
+combine_data <- combine_data %>% 
+  drop_na(pick)
+
+write_rds(combine_data, "Athlete-Injuries/combine_data.rds")
 ```
 
