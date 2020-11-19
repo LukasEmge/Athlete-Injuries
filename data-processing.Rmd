@@ -308,5 +308,17 @@ combine_data <- combine_data %>%
   drop_na(pick)
 
 write_rds(combine_data, "Athlete-Injuries/combine_data.rds")
+
+combine_data %>% 
+  filter(team == "Pittsburgh Steelers") %>% 
+  pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+               names_to = "test", values_to = "result") %>% 
+  group_by(test) %>% 
+  summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+  ggplot(aes(x = test, y = average)) +
+  geom_col()
+
+
+
 ```
 
