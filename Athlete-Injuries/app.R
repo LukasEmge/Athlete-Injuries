@@ -15,7 +15,7 @@ combine_data <- read_rds("combine_data.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-    theme = shinytheme("superhero"),
+    theme = shinytheme("united"),
     navbarPage(
         "NFL Draft Combine Results",
         tabPanel("Testing Correlation",
@@ -25,7 +25,7 @@ ui <- fluidPage(
                  sidebarLayout(
                      sidebarPanel(
                        h4(strong("Select Position and Tests")),
-                       selectInput("position",
+                       selectInput("position1",
                                    "Position",
                                    c("Defensive End" = "DE",
                                      "Defensive Tackle" = "DT",
@@ -72,7 +72,7 @@ ui <- fluidPage(
                  sidebarLayout(
                    sidebarPanel(
                      h4(strong("Select Position and Test")),
-                     selectInput("position",
+                     selectInput("position2",
                                  "Position",
                                  c("Defensive End" = "DE",
                                    "Defensive Tackle" = "DT",
@@ -89,7 +89,7 @@ ui <- fluidPage(
                                    "Wide Reciever" = "WR",
                                    "Running Back" = "RB",
                                    "Punter" = "P")),
-                     selectInput("test",
+                     selectInput("test3",
                                  "Test",
                                  c("40 Yard Dash" = "x40yd",
                                    "Broad Jump" = "broad_jump",
@@ -110,7 +110,7 @@ ui <- fluidPage(
                  sidebarLayout(
                    sidebarPanel(
                      h4(strong("Select Position and Team")),
-                     selectInput("team",
+                     selectInput("team1",
                                  "Team",
                                  c("Arizona Cardinals" = "Arizona Cardinals",
                                  "Atlanta Falcons" = "Atlanta Falcons",
@@ -144,7 +144,7 @@ ui <- fluidPage(
                                  "Tampa Bay Buccaneers" = "Tampa Bay Buccaneers",
                                  "Tennessee Titans" = "Tennessee Titans",
                                  "Washington Football Team" = "Washington Redskins")),
-                     selectInput("position",
+                     selectInput("position3",
                                  "Position",
                                  c("Defensive End" = "DE",
                                    "Defensive Tackle" = "DT",
@@ -161,7 +161,7 @@ ui <- fluidPage(
                                    "Wide Reciever" = "WR",
                                    "Running Back" = "RB",
                                    "Punter" = "P")),
-                     selectInput("test",
+                     selectInput("test4",
                                  "Test",
                                  c("40 Yard Dash" = "x40yd",
                                    "Broad Jump" = "broad_jump",
@@ -218,7 +218,7 @@ server <- function(input, output) {
     
     output$distPlot1 <- renderPlot({
         combine_data %>% 
-        filter(pos == input$position) %>% 
+        filter(pos == input$position1) %>% 
         select(choice = !!input$test1, choicey = !!input$test2, pos) %>% 
             ggplot(aes(x = choice, y = choicey)) + 
             geom_point() + 
@@ -231,28 +231,40 @@ server <- function(input, output) {
     
     output$distPlot2 <- renderPlot({
       combine_data %>%
-        filter(pos == input$position) %>% 
-        select(choicey = !!input$test, pick) %>%
+        filter(pos == input$position2) %>% 
+        select(choicey = !!input$test3, pick, pos) %>%
         ggplot(aes(x = choicey, y = pick)) + 
         geom_point() + 
         geom_smooth(method = "lm", se = FALSE) +
-        labs(x = "input$test", 
+        labs(x = input$test3, 
              y = "Draft Position",
              title = paste("Relation of Draft Position to ", input$test))
       
     })
     
     output$distPlot3 <- renderPlot({
-      combine_data %>%
+      combine_data %>% 
+        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+                     names_to = "test", values_to = "result") %>% 
+        group_by(test) %>% 
+        summarise(nfl_average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+        filter(test == input$test4) -> nfl_average
+      
+      
+      combine_data %>% 
         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos) %>% 
-        filter(team == input$team,
-               pos == input$position) %>% 
+        filter(team == input$team1,
+               pos == input$position3) %>% 
         pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
         summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
-        filter(test == input$test) %>% 
-        ggplot(aes(x = test, y = average)) +
+        filter(test == input$test4) %>% 
+        full_join(nfl_average) %>% 
+        pivot_longer(cols = c(average, nfl_average),
+                     names_to = "team_or_nfl",
+                     values_to = "result") %>% 
+        ggplot(aes(x = team_or_nfl, y = result)) +
         geom_col()
        
      })
@@ -263,7 +275,7 @@ server <- function(input, output) {
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
         summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
-        filter(test == input$test) %>% 
+        filter(test == input$test4) %>% 
         ggplot(aes(x = test, y = average)) +
         geom_col()
        
