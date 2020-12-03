@@ -362,12 +362,14 @@ cor(testingdata$x40yd, testingdata$broad_jump, method = "spearman")
               
       
       
-    fit <-  stan_glm(data = combine_data,
-               formula = pick ~ x40yd,
+    fit_40 <-  stan_glm(data = combine_data,
+               formula = pick ~ x40yd -1,
                family = gaussian(),
                refresh = 0)
     
     print(fit)
+    
+    posterior_interval(fit_40)
     
     posterior <- as.array(fit)
     dim(posterior)
@@ -385,5 +387,103 @@ cor(testingdata$x40yd, testingdata$broad_jump, method = "spearman")
     ggplot(aes(x = `1`)) + 
     geom_histogram()
         
+  
+  fit <- stan_glm(data = combine_data,
+                        formula = pick ~ x40yd + vertical + bench_reps + broad_jump + x3cone + shuttle - 1,
+                        family = gaussian(),
+                        refresh = 0)
+  
+  stan_glm(data = combine_data,
+                        formula = pick ~ x40yd - 1,
+                        family = gaussian(),
+                        refresh = 0)
+  
+  stan_glm(data = combine_data,
+                        formula = pick ~ vertical - 1,
+                        family = gaussian(),
+                        refresh = 0)
+  
+  stan_glm(data = combine_data,
+                        formula = pick ~ bench_reps - 1,
+                        family = gaussian(),
+                        refresh = 0)
+  
+  stan_glm(data = combine_data,
+                        formula = pick ~ broad_jump - 1,
+                        family = gaussian(),
+                        refresh = 0)
+  
+  
+  stan_glm(data = combine_data,
+                        formula = pick ~ x3cone - 1,
+                        family = gaussian(),
+                        refresh = 0)
+  
+  stan_glm(data = combine_data,
+                        formula = pick ~ shuttle - 1,
+                        family = gaussian(),
+                        refresh = 0)
+  
+  
+   output$table <- render_gt({
+       
+      combine_data_stan <- combine_data %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         filter(pos == input$position4)
+      
+      set.seed(5)
+      fit_40 <- stan_glm(data = combine_data_stan,
+               formula = pick ~ x40yd - 1,
+               family = gaussian(),
+               refresh = 0)
+     
+       set.seed(6)
+      fit_vert <- stan_glm(data = combine_data_stan,
+               formula = pick ~ vertical - 1,
+               family = gaussian(),
+               refresh = 0)
+      
+      set.seed(7)
+     fit_bench <- stan_glm(data = combine_data_stan,
+               formula = pick ~ bench_reps - 1,
+               family = gaussian(),
+               refresh = 0)
+      
+      set.seed(8)
+     fit_broad <- stan_glm(data = combine_data_stan,
+               formula = pick ~ broad_jump - 1,
+               family = gaussian(),
+               refresh = 0)
+      
+      set.seed(9)
+     fit_3cone <- stan_glm(data = combine_data_stan,
+               formula = pick ~ x3cone - 1,
+               family = gaussian(),
+               refresh = 0)
+      
+      set.seed(10)
+     fit_shuttle <- stan_glm(data = combine_data_stan,
+               formula = pick ~ shuttle - 1,
+               family = gaussian(),
+               refresh = 0)
+      
+     tbl_regression(fit_40, intercept = FALSE) %>% 
+       as_gt()
+     
+     tbl_regression(fit_vert, intercept = FALSE) %>% 
+       as_gt()
+     
+     tbl_regression(fit_bench, intercept = FALSE) %>% 
+       as_gt()
+     
+     tbl_regression(fit_broad, intercept = FALSE) %>% 
+       as_gt()
+     
+     tbl_regression(fit_3cone, intercept = FALSE) %>% 
+       as_gt()
+     
+     tbl_regression(fit_shuttle, intercept = FALSE) %>% 
+       as_gt()
+  
 ```
 

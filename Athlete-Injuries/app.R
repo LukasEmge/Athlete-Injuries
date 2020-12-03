@@ -10,6 +10,9 @@
 library(shiny)
 library(tidyverse)
 library(shinythemes)
+library(gtsummary)
+library(gt)
+library(broom.mixed)
 
 combine_data <- read_rds("combine_data.rds")
 
@@ -198,7 +201,12 @@ ui <- fluidPage(
                                    "Running Back" = "RB",
                                    "Punter" = "P"))),
                    mainPanel(
-                     plotOutput("distPlot5")
+                     gt_output("table"),
+                     gt_output("table2"),
+                     gt_output("table3"),
+                     gt_output("table4"),
+                     gt_output("table5"),
+                     gt_output("table6")
                    )
                    )
         ),
@@ -244,7 +252,17 @@ server <- function(input, output) {
     
     
     output$distPlot1 <- renderPlot({
-        combine_data %>% 
+        
+      combine_data %>% 
+        filter(pos == input$position1) %>% 
+        drop_na(x40yd) %>% 
+        drop_na(broad_jump) -> correlationdata
+      
+      
+      cor(correlationdata$x40yd, correlationdata$broad_jump, method = "spearman") %>% 
+        round(3) -> corr
+      
+      combine_data %>% 
         filter(pos == input$position1) %>% 
         select(choice = !!input$test1, choicey = !!input$test2, pos) %>% 
             ggplot(aes(x = choice, y = choicey)) + 
@@ -252,15 +270,10 @@ server <- function(input, output) {
         geom_smooth(method = "lm", se = FALSE) +
             labs(x = input$test1, 
                  y = input$test2,
-                 title = paste("Relation of ", input$test1, " and ", input$test2))
-      
-     # combine_data %>% 
-      #  filter(pos == input$position1) -> correlationdata
-      
-      #combine_data %>% 
-       # cor(.$x40yd, .$broad_jump, method = "spearman") -> corr
-      
-    #  print(corr)
+                 title = paste("Relation of ", input$test1, " and ", input$test2),
+                 subtitle = paste("r = ", corr)) +
+        theme_minimal()
+     
       
   
         
@@ -275,7 +288,8 @@ server <- function(input, output) {
         geom_smooth(method = "lm", se = FALSE) +
         labs(x = input$test3, 
              y = "Draft Position",
-             title = paste("Relation of Draft Position to ", input$test))
+             title = paste("Relation of Draft Position to ", input$test)) +
+        theme_minimal()
       
     })
     
@@ -302,8 +316,9 @@ server <- function(input, output) {
         pivot_longer(cols = c(average, nfl_average),
                      names_to = "team_or_nfl",
                      values_to = "result") %>% 
-        ggplot(aes(x = team_or_nfl, y = result)) +
-        geom_col()
+        ggplot(aes(x = team_or_nfl, y = result, fill = team_or_nfl)) +
+        geom_col() +
+        theme_minimal()
        
      })
     
@@ -319,23 +334,111 @@ server <- function(input, output) {
        
       #})
      
-     output$distPlot5 <- renderPlot({
+     output$table <- render_gt({
        
       combine_data_stan <- combine_data %>% 
          select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
          filter(pos == input$position4)
+      
+      set.seed(5)
+      fit_40 <- stan_glm(data = combine_data_stan,
+               formula = pick ~ x40yd - 1,
+               family = gaussian(),
+               refresh = 0)
+     
        
-      fit <- stan_glm(data = combine_data_stan,
-                        formula = pick ~ x40yd + vertical + bench_reps + broad_jump + x3cone + shuttle,
-                        family = gaussian(),
-                        refresh = 0)
-      posterior <- as.array(fit)
-      dim(posterior)
-      dimnames(posterior)
-      color_scheme_set("red")
-      mcmc_areas(posterior, par = c("x40yd", "vertical", "bench_reps", "broad_jump", "x3cone", "shuttle"))
-       
+     tbl_regression(fit_40, intercept = FALSE) %>% 
+       as_gt()
+     
+     
+      
+      #fit <- stan_glm(data = combine_data_stan,
+       #               formula = pick ~ x40yd + vertical + bench_reps + broad_jump + x3cone + shuttle - 1,
+        #              family = gaussian(),
+         #             refresh = 0)
+      
+       #tbl_regression(fit, intercept = FALSE) %>% 
+        # as_gt()
      })
+     
+     output$table2 <- render_gt({
+       
+       combine_data_stan <- combine_data %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         filter(pos == input$position4)
+       
+       set.seed(6)
+       fit_vert <- stan_glm(data = combine_data_stan,
+                            formula = pick ~ vertical - 1,
+                            family = gaussian(),
+                            refresh = 0)
+      
+       tbl_regression(fit_vert, intercept = FALSE) %>% 
+         as_gt() })
+     
+     output$table3 <- render_gt({
+       
+       combine_data_stan <- combine_data %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         filter(pos == input$position4)
+       
+       set.seed(4)
+       fit_bench <- stan_glm(data = combine_data_stan,
+                            formula = pick ~ bench_reps - 1,
+                            family = gaussian(),
+                            refresh = 0)
+       
+       tbl_regression(fit_bench, intercept = FALSE) %>% 
+         as_gt() })
+     
+     output$table4 <- render_gt({
+       
+       combine_data_stan <- combine_data %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         filter(pos == input$position4)
+       
+       set.seed(5)
+       fit_broad <- stan_glm(data = combine_data_stan,
+                            formula = pick ~ broad_jump - 1,
+                            family = gaussian(),
+                            refresh = 0)
+       
+       tbl_regression(fit_broad, intercept = FALSE) %>% 
+         as_gt() })
+     
+     output$table5 <- render_gt({
+       
+       combine_data_stan <- combine_data %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         filter(pos == input$position4)
+       
+       set.seed(11)
+       fit_3cone <- stan_glm(data = combine_data_stan,
+                            formula = pick ~ x3cone - 1,
+                            family = gaussian(),
+                            refresh = 0)
+       
+       tbl_regression(fit_3cone, intercept = FALSE) %>% 
+         as_gt() })
+     
+     output$table6 <- render_gt({
+       
+       combine_data_stan <- combine_data %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         filter(pos == input$position4)
+       
+       set.seed(12)
+       fit_shuttle <- stan_glm(data = combine_data_stan,
+                            formula = pick ~ shuttle - 1,
+                            family = gaussian(),
+                            refresh = 0)
+       
+       tbl_regression(fit_shuttle, intercept = FALSE) %>% 
+         as_gt() })
+     
+
+       
+    
     # 
     # output$distPlot6 <- renderPlot({
     #   combine_data %>% 
