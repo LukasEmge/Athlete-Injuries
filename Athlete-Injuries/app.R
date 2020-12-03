@@ -60,7 +60,7 @@ ui <- fluidPage(
                      ),
                      
                      mainPanel(
-                       plotOutput("distPlot1"),
+                       plotOutput("distPlot1")
                      )
                      
                    
@@ -98,7 +98,7 @@ ui <- fluidPage(
                                    "Vertical" = "vertical",
                                    "Bench Press" = "bench_reps"))),
                    mainPanel(
-                     plotOutput("distPlot2"),
+                     plotOutput("distPlot2")
                    )
                    )
                  
@@ -171,12 +171,39 @@ ui <- fluidPage(
                                    "Bench Press" = "bench_reps"))),
                      mainPanel(
                        plotOutput("distPlot3"),
-                       plotOutput("distPlot4"),
+                       plotOutput("distPlot4")
                      )
                    )
                  ),
         
-        tabPanel("Offense"),
+        tabPanel("Tests Affect - stan_glm",
+                 titlePanel("How do test results affect draft position?"),
+                 sidebarLayout(
+                   sidebarPanel(
+                     h4(strong("Select Position and Test")),
+                     selectInput("position4",
+                                 "Position",
+                                 c("Defensive End" = "DE",
+                                   "Defensive Tackle" = "DT",
+                                  "Outside Linebacker" = "OLB",
+                                  "Strong Safety" = "SS",
+                                  "Free Safety" = "FS",
+                                   "Cornerback" = "CB",
+                                   "Quarterback" = "QB",
+                                   "Offensive Tackle" = "OT",
+                                   "Offensive Guard" = "OG",
+                                   "Fullback" = "FB",
+                                   "Tight End" = "TE",
+                                   "Wide Reciever" = "WR",
+                                   "Running Back" = "RB",
+                                   "Punter" = "P"))),
+                   mainPanel(
+                     plotOutput("distPlot5")
+                   )
+                   )
+        ),
+        
+        
         tabPanel("About",
                  titlePanel("About"),
                  br(),
@@ -206,7 +233,7 @@ ui <- fluidPage(
                  
                  
                  )
-    ),
+    )
 )
     
 
@@ -226,6 +253,16 @@ server <- function(input, output) {
             labs(x = input$test1, 
                  y = input$test2,
                  title = paste("Relation of ", input$test1, " and ", input$test2))
+      
+     # combine_data %>% 
+      #  filter(pos == input$position1) -> correlationdata
+      
+      #combine_data %>% 
+       # cor(.$x40yd, .$broad_jump, method = "spearman") -> corr
+      
+    #  print(corr)
+      
+  
         
     })
     
@@ -244,6 +281,7 @@ server <- function(input, output) {
     
     output$distPlot3 <- renderPlot({
       combine_data %>% 
+        filter(pos == input$position3) %>% 
         pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
@@ -269,27 +307,35 @@ server <- function(input, output) {
        
      })
     
-    output$distPlot4 <- renderPlot({
-       combine_data %>% 
-        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
-                     names_to = "test", values_to = "result") %>% 
-        group_by(test) %>% 
-        summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
-        filter(test == input$test4) %>% 
-        ggplot(aes(x = test, y = average)) +
-        geom_col()
-       
-      })
-    # 
-    # output$distPlot5 <- renderPlot({
+   # output$distPlot4 <- renderPlot({
     #   combine_data %>% 
-    #     ggplot(aes(x = vertical, y = broad_jump, color = pos)) + 
-    #     geom_point() + 
-    #     labs(x = "Vertical (Inches)",
-    #          y = "Broad Jump (Inches)",
-    #          title = "Relation of Broad Jump to Vertical")
-    #   
-    # })
+     #   pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+      #               names_to = "test", values_to = "result") %>% 
+       # group_by(test) %>% 
+        #summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+        #filter(test == input$test4) %>% 
+        #ggplot(aes(x = test, y = average)) +
+        #geom_col()
+       
+      #})
+     
+     output$distPlot5 <- renderPlot({
+       
+      combine_data_stan <- combine_data %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         filter(pos == input$position4)
+       
+      fit <- stan_glm(data = combine_data_stan,
+                        formula = pick ~ x40yd + vertical + bench_reps + broad_jump + x3cone + shuttle,
+                        family = gaussian(),
+                        refresh = 0)
+      posterior <- as.array(fit)
+      dim(posterior)
+      dimnames(posterior)
+      color_scheme_set("red")
+      mcmc_areas(posterior, par = c("x40yd", "vertical", "bench_reps", "broad_jump", "x3cone", "shuttle"))
+       
+     })
     # 
     # output$distPlot6 <- renderPlot({
     #   combine_data %>% 

@@ -10,6 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
 library(janitor)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(rstanarm)
+library(bayesplot)
 ```
 
 ```{r}
@@ -334,6 +339,51 @@ combine_data %>%
         summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
         filter(test == "x40yd") %>% 
         full_join(nfl_average)
-
+      
+      
+   combine_data %>% 
+        filter(pos %in% "DT") %>% 
+        drop_na(x40yd) %>% 
+        drop_na(broad_jump) -> testingdata
+         
+         
+cor(testingdata$x40yd, testingdata$broad_jump, method = "spearman")
+      
+  
+        
+      
+      combine_data %>% 
+        filter(pos %in% "DT") %>% 
+            ggplot(aes(x = x40yd, y = broad_jump)) + 
+            geom_point() + 
+        geom_smooth(method = "lm", se = FALSE) %>% 
+        annotation_custom(grob1)
+              
+              
+      
+      
+    fit <-  stan_glm(data = combine_data,
+               formula = pick ~ x40yd,
+               family = gaussian(),
+               refresh = 0)
+    
+    print(fit)
+    
+    posterior <- as.array(fit)
+    dim(posterior)
+    dimnames(posterior)
+    color_scheme_set("red")
+    mcmc_areas(posterior, par= "x40yd")
+    
+   newdata <- combine_data %>% 
+      select(pick, x40yd) %>% 
+      drop_na(x40yd) %>% 
+      head(1)
+      
+  posterior_predict(fit_40, newdata = newdata) %>% 
+    as_tibble() %>% 
+    ggplot(aes(x = `1`)) + 
+    geom_histogram()
+        
 ```
 
