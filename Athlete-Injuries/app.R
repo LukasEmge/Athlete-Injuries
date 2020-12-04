@@ -307,7 +307,7 @@ server <- function(input, output) {
         geom_smooth(method = "lm", se = FALSE) +
         labs(x = input$test3, 
              y = "Draft Position",
-             title = paste("Relation of Draft Position to ", input$test),
+             title = paste("Relation of Draft Position to ", input$test3),
              subtitle = paste("r = ", corr2)) +
         theme_minimal()
       
@@ -351,7 +351,7 @@ server <- function(input, output) {
         pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
-        summarise(nfl_average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+        summarise(`NFL Average` = mean(result, na.rm = TRUE), .groups = "drop") %>% 
         filter(test == input$test4) -> nfl_average
       
       
@@ -362,15 +362,16 @@ server <- function(input, output) {
         pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
-        summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+        summarise(`Average for Team` = mean(result, na.rm = TRUE), .groups = "drop") %>% 
         filter(test == input$test4) %>% 
         full_join(nfl_average) %>% 
-        pivot_longer(cols = c(average, nfl_average),
-                     names_to = "team_or_nfl",
-                     values_to = "result") %>% 
-        ggplot(aes(x = team_or_nfl, y = result, fill = team_or_nfl)) +
+        pivot_longer(cols = c(`Average for Team`, `NFL Average`),
+                     names_to = "Team vs. NFL",
+                     values_to = "Result") %>% 
+        ggplot(aes(x = `Team vs. NFL`, y = Result, fill = `Team vs. NFL`)) +
         geom_col() +
         labs(subtitle = paste("Team Average = ", teamaverage, " NFL Average = ", nflaverage)) +
+        scale_fill_manual(values = c("blue", "red")) +
         theme_minimal()
        
      })
