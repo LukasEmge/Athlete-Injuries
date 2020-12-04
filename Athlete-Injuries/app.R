@@ -285,7 +285,21 @@ server <- function(input, output) {
     })
     
     output$distPlot2 <- renderPlot({
-      combine_data %>%
+     
+      combine_data %>% 
+        filter(pos == input$position2) %>% 
+        drop_na(x40yd) %>% 
+        drop_na(vertical) %>% 
+        drop_na(bench_reps) %>% 
+        drop_na(broad_jump) %>% 
+        drop_na(x3cone) %>% 
+        drop_na(shuttle) %>% 
+        select(x = !!input$test3, pick, pos)-> correlationdata2
+      
+      cor(correlationdata2$x, correlationdata2$pick, method = "spearman") %>% 
+        round(3) -> corr2
+      
+       combine_data %>%
         filter(pos == input$position2) %>% 
         select(choicey = !!input$test3, pick, pos) %>%
         ggplot(aes(x = choicey, y = pick)) + 
@@ -293,12 +307,45 @@ server <- function(input, output) {
         geom_smooth(method = "lm", se = FALSE) +
         labs(x = input$test3, 
              y = "Draft Position",
-             title = paste("Relation of Draft Position to ", input$test)) +
+             title = paste("Relation of Draft Position to ", input$test),
+             subtitle = paste("r = ", corr2)) +
         theme_minimal()
       
     })
     
     output$distPlot3 <- renderPlot({
+      combine_data %>% 
+        drop_na(x40yd) %>% 
+        drop_na(vertical) %>% 
+        drop_na(bench_reps) %>% 
+        drop_na(broad_jump) %>% 
+        drop_na(x3cone) %>% 
+        drop_na(shuttle) %>% 
+        filter(team == input$team1,
+               pos == input$position3) %>% 
+        select(event = input$test4, pos, team) -> comparison_data
+      
+      comparison_data %>% 
+        summarise(event = mean(event)) %>% 
+        pull() %>% 
+        round(4) -> teamaverage
+      
+      combine_data %>% 
+        drop_na(x40yd) %>% 
+        drop_na(vertical) %>% 
+        drop_na(bench_reps) %>% 
+        drop_na(broad_jump) %>% 
+        drop_na(x3cone) %>% 
+        drop_na(shuttle) %>% 
+        filter(pos == input$position3) %>% 
+        select(event2 = input$test4, pos) -> comparison_data_NFL
+      
+      comparison_data_NFL %>% 
+        summarise(event2 = mean(event2)) %>% 
+        pull() %>% 
+        round(4) -> nflaverage
+      
+      
       combine_data %>% 
         filter(pos == input$position3) %>% 
         pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
@@ -323,6 +370,7 @@ server <- function(input, output) {
                      values_to = "result") %>% 
         ggplot(aes(x = team_or_nfl, y = result, fill = team_or_nfl)) +
         geom_col() +
+        labs(subtitle = paste("Team Average = ", teamaverage, " NFL Average = ", nflaverage)) +
         theme_minimal()
        
      })
