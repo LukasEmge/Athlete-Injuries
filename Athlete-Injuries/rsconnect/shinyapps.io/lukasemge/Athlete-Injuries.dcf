@@ -1,0 +1,12 @@
+name: Athlete-Injuries
+title: Athlete-Injuries
+username:
+account: lukasemge
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3065001
+bundleId: 3936125
+url: https://lukasemge.shinyapps.io/Athlete-Injuries/
+when: 1606964227.63554
+asMultiple: FALSE
+asStatic: FALSE
