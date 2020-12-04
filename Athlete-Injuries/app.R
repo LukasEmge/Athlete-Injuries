@@ -24,7 +24,13 @@ ui <- fluidPage(
         tabPanel("Testing Correlation",
                  titlePanel("Do results in some tests \ncorrelate with other tests?"),
                  
-                 # Sidebar with a slider input for number of bins 
+                 # In this section, you will be able to analyze the correlation
+                 # between different events that take place at the NFL Combine.
+                 # For example, does running a fast 40 yard dash mean that a
+                 # player will also likely have a good broad jump or vertical jump?
+                 # The more we can contextualize the results of the tests done 
+                 # at the NFL Combine, the better we can understand their affects.
+                 
                  sidebarLayout(
                      sidebarPanel(
                        h4(strong("Select Position and Tests")),
@@ -45,6 +51,10 @@ ui <- fluidPage(
                                      "Wide Reciever" = "WR",
                                      "Running Back" = "RB",
                                      "Punter" = "P")),
+                       
+                       # This slider allows you to select a specific position
+                       # to analyze.
+                       
                        selectInput("test1",
                                      "Test 1",
                                      c("40 Yard Dash" = "x40yd",
@@ -59,6 +69,10 @@ ui <- fluidPage(
                                      "3 Cone Drill" = "x3cone",
                                      "Shuttle" = "shuttle",
                                      "Vertical" = "vertical"))
+                       
+                       
+                       # These 2 sliders allow you to pick which events you 
+                       # would like to see the correlation between.
                                        
                      ),
                      
@@ -70,8 +84,15 @@ ui <- fluidPage(
                  ) 
                  
                  ),
-        tabPanel("Tests Affects",
+        tabPanel("Tests Effects",
                  titlePanel("How do test results affect draft position?"),
+                 
+                 # This is probably the most informative graph I have so far.
+                 # This graph allows you to filter by a specific position, and then
+                 # look at how the results of different events at each position affects
+                 # their draft position. Does a good 40 yard dash time mean more or
+                 # less than a good broad jump? This graph helps us look at that.
+                 
                  sidebarLayout(
                    sidebarPanel(
                      h4(strong("Select Position and Test")),
@@ -92,6 +113,10 @@ ui <- fluidPage(
                                    "Wide Reciever" = "WR",
                                    "Running Back" = "RB",
                                    "Punter" = "P")),
+                     
+                     # Again, this slider is allowing the ability to select the
+                     # position that you would like to analyze.
+                     
                      selectInput("test3",
                                  "Test",
                                  c("40 Yard Dash" = "x40yd",
@@ -100,6 +125,10 @@ ui <- fluidPage(
                                    "Shuttle" = "shuttle",
                                    "Vertical" = "vertical",
                                    "Bench Press" = "bench_reps"))),
+                   
+                   # This slider allows you to select which event you want to 
+                   # look at and analyze.
+                   
                    mainPanel(
                      plotOutput("distPlot2")
                    )
@@ -110,6 +139,12 @@ ui <- fluidPage(
                  ),
         tabPanel("Team by Team",
                  titlePanel("How do different teams tend to pick players?"),
+                 
+                 # This graph will plot NFL Team's tendencies to prioritize 
+                 # different events for different positions by plotting the results
+                 # for the players they draft at different positions with the 
+                 # NFL Average at these positions.
+                 
                  sidebarLayout(
                    sidebarPanel(
                      h4(strong("Select Position and Team")),
@@ -147,6 +182,10 @@ ui <- fluidPage(
                                  "Tampa Bay Buccaneers" = "Tampa Bay Buccaneers",
                                  "Tennessee Titans" = "Tennessee Titans",
                                  "Washington Football Team" = "Washington Redskins")),
+                     
+                     # This slider allows you to select which team you would like
+                     # to look at.
+                     
                      selectInput("position3",
                                  "Position",
                                  c("Defensive End" = "DE",
@@ -164,6 +203,10 @@ ui <- fluidPage(
                                    "Wide Reciever" = "WR",
                                    "Running Back" = "RB",
                                    "Punter" = "P")),
+                     
+                     # This slider allows you to select the position you would
+                     # like to analyze.
+                     
                      selectInput("test4",
                                  "Test",
                                  c("40 Yard Dash" = "x40yd",
@@ -172,6 +215,10 @@ ui <- fluidPage(
                                    "Shuttle" = "shuttle",
                                    "Vertical" = "vertical",
                                    "Bench Press" = "bench_reps"))),
+                   
+                   # This slider allows you to select the event you want to
+                   # analyze.
+                   
                      mainPanel(
                        plotOutput("distPlot3"),
                        plotOutput("distPlot4")
@@ -179,8 +226,12 @@ ui <- fluidPage(
                    )
                  ),
         
-        tabPanel("Tests Affect - stan_glm",
+        tabPanel("Model",
                  titlePanel("How do test results affect draft position?"),
+                 
+                 # This will run the model to tell us how different events 
+                 # affect draft position for the specific positions in the NFL.
+                 
                  sidebarLayout(
                    sidebarPanel(
                      h4(strong("Select Position and Test")),
@@ -269,9 +320,17 @@ server <- function(input, output) {
         drop_na(shuttle) %>% 
         select(x = !!input$test1, y = !!input$test2, pos)-> correlationdata
       
+      # Here I am filtering my data by the specific position that the viewer selects.
+      # I am also running drop_na on all columns, and selecting the two tests that
+      # the viewer chooses, assigning them to x and y. This allows me to 
+      # check the correlation.
  
       cor(correlationdata$x, correlationdata$y, method = "spearman") %>% 
         round(3) -> corr
+      
+      # It took a lot of time for me to figure out how to plot the correlation of
+      # the different tests on my graph. I finally decided to fun the correlation between
+      # the two tests that are selected and then place the correlation in the subtitle.
       
       combine_data %>% 
         filter(pos == input$position1) %>% 
@@ -283,7 +342,14 @@ server <- function(input, output) {
                  y = input$test2,
                  title = paste("Relation of ", input$test1, " and ", input$test2),
                  subtitle = paste("r = ", corr)) +
-        theme_minimal()
+        theme_minimal() 
+      
+      # Here, I filtered the position to the position that the user selected. I then
+      # selected the tests they selected, and assigned them to choice and choicey. I
+      # also selected pos column. I graphed the selected tests against each other, 
+      # using geom_point and geom_smooth. I had to use select to assign the 
+      # chosen tests to different names so that I could use the slider to change the 
+      # ggplot.
      
       
   
@@ -305,6 +371,9 @@ server <- function(input, output) {
       cor(correlationdata2$x, correlationdata2$pick, method = "spearman") %>% 
         round(3) -> corr2
       
+      # Above, I did the same steps to find the correlation so that I could place 
+      # it in the subtitle again.
+      
        combine_data %>%
         filter(pos == input$position2) %>% 
         select(choicey = !!input$test3, pick, pos) %>%
@@ -316,6 +385,9 @@ server <- function(input, output) {
              title = paste("Relation of Draft Position to ", input$test3),
              subtitle = paste("r = ", corr2)) +
         theme_minimal()
+       
+       # I first filtered by the position that was selected, and then followed 
+       # basically the sames steps as the graph above.
       
     })
     
@@ -336,6 +408,14 @@ server <- function(input, output) {
         pull() %>% 
         round(4) -> teamaverage
       
+      # The above code was done so that I could calculate the average value
+      # for each test for specific teams and positions. I used drop_na to get
+      # rid of any NAs, and I filtered by team and position selected in the slider. 
+      # I used select to rename the test4 slider to event so that I could take 
+      # the mean of it in the summarise. Using input$test4 in summarise gave problems.
+      # I assigned this value to teamaverage. This was done so that I could include 
+      # this value in the subtitle.
+      
       combine_data %>% 
         drop_na(x40yd) %>% 
         drop_na(vertical) %>% 
@@ -351,6 +431,9 @@ server <- function(input, output) {
         pull() %>% 
         round(4) -> nflaverage
       
+      # The same steps as above were followed, but I just did not filter by team.
+      # This allowed me to find the NFL Average for each test at each position.
+      # I named this to nflaverage so that I could add this to my subtitle.
       
       combine_data %>% 
         filter(pos == input$position3) %>% 
@@ -359,6 +442,13 @@ server <- function(input, output) {
         group_by(test) %>% 
         summarise(`NFL Average` = mean(result, na.rm = TRUE), .groups = "drop") %>% 
         filter(test == input$test4) -> nfl_average
+      
+      # Above, I filtered by the position that was select. I then pivoted my data
+      # so that I had a test column with the different tests and a result column
+      # with the results of the test. I then grouped by test and summarised to find
+      # the mean of each different test. I then filtered by the selected test. What this
+      # allowed me to do was get a value in a tibble for the average result of a 
+      # test for a specific position accross the NFL.
       
       
       combine_data %>% 
@@ -379,6 +469,15 @@ server <- function(input, output) {
         labs(subtitle = paste("Team Average = ", teamaverage, " NFL Average = ", nflaverage)) +
         scale_fill_manual(values = c("blue", "red")) +
         theme_minimal()
+      
+      # I did the same steps as above first, but I preceeded the pivot_longer with
+      # a filter for selected team. This allowed me to get a tibble with the average
+      # result of a specific test for a specific position and team. I then joined this tibble
+      # with the whole NFL one I just created. I pivoted this joined data. This gave me
+      # a tibble with a column named Team vs. NFL that told me whether the result was for
+      # a specific team or across the NFL, and a second column that gave me the average result
+      # for a selected test. I then graphed these two values against each other so that
+      # their difference could be visualized.
        
      })
     
@@ -410,7 +509,12 @@ server <- function(input, output) {
      tbl_regression(fit_40, intercept = FALSE) %>% 
        as_gt()
      
-     
+     # I ran a model with pick dependent on 40 yard dash to see the affect that
+     # 40 yard dash had on draft position. I originally ran into a problem because I
+     # tried to run the model with all of the events in the formula. However, the
+     # different tests are correlated to eachother and therefore gave inaccurate values.
+     # Instead, I ran the model on each event seperately and plotted the tables 
+     # individually, which can be seen below.
       
       #fit <- stan_glm(data = combine_data_stan,
        #               formula = pick ~ x40yd + vertical + bench_reps + broad_jump + x3cone + shuttle - 1,
