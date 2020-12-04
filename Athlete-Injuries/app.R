@@ -256,10 +256,15 @@ server <- function(input, output) {
       combine_data %>% 
         filter(pos == input$position1) %>% 
         drop_na(x40yd) %>% 
-        drop_na(broad_jump) -> correlationdata
+        drop_na(vertical) %>% 
+        drop_na(bench_reps) %>% 
+        drop_na(broad_jump) %>% 
+        drop_na(x3cone) %>% 
+        drop_na(shuttle) %>% 
+        select(x = !!input$test1, y = !!input$test2, pos)-> correlationdata
       
-      
-      cor(correlationdata$x40yd, correlationdata$broad_jump, method = "spearman") %>% 
+ 
+      cor(correlationdata$x, correlationdata$y, method = "spearman") %>% 
         round(3) -> corr
       
       combine_data %>% 
