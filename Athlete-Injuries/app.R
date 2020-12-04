@@ -215,23 +215,29 @@ ui <- fluidPage(
         tabPanel("About",
                  titlePanel("About"),
                  br(),
-                 h4("About the Data"),
-                 p("The dataset I am using was found on kaggle.com. The data 
-                   contains all of the results from the 2017 NFL Combine, 
-                   as well as draft position. The data set was originally 
-                   organized seperately, with an offensive and defensive 
-                   dataset. Therefore, I had to manually join the two
-                   seperate data sets in one. I would like to eventualy analyze
-                   what events have high correlation between increased
-                   draft position and what events have a lower correlation
-                   with earlier draft position. This is different than my
-                   original idea, but I believe easier to analyze given
-                   the data already available. This could also have 
-                   implications on what aspects of training future NFL
-                   prospects should focus on."),
+                 h1("NFL Combine Background"),
+                 p("Every year in February, the country's top college football players attend the
+                   NFL Combine, where players are tested in different events such as the
+                   40 yard dash, broad jump, vertical jump, and more. NFL teams send scouts to
+                   evaluate players, and in April the NFL Draft occurs, where NFL teams take
+                   turns drafting players in 7 rounds. Players train for months and even
+                   years, often paying trainers large amounts of money in hopes of maximizing
+                   their performance at the combine, and in turn maximize their draft position. 
+                   But the question that not many people ask is, do the results of the NFL 
+                   Combine really affect a players draft position? Furthermore, what events
+                   have the largest affect at each position? Do different teams tend to 
+                   prioritize different events more than others? In reality, does the NFL
+                   Combine really even matter all that much?"),
                  br(),
-                 h4("About Me"),
-                 p("I am a junior at Harvard College. I play quartback for the
+                 h1("About the Data"),
+                    p("The dataset was found on kaggle.com. The datasets were originally
+                      seperated by year, from 2013 to 2017, and by offense vs. defense. I therefore
+                      had to combine each seperate combine year and the two sides of the 
+                      ball. Since the data covers a 5 year span, the dataset contains
+                      1027 observations."),
+                 h1("About Me"),
+                 p("I am a junior at Harvard College. I am a chemistry concentrator with
+                 plans to enter the medical field. I play quartback for the,
                    varsity football team, so this specific data is very 
                    intriguing."),
                  h5("The source code for this Shiny App can be found at my 
