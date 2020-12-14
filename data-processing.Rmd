@@ -316,11 +316,12 @@ combine_data <- combine_data %>%
 
 combine_data$pick <- as.numeric(as.character(combine_data$pick))
 
-# A huge problem I had was the fact that there was not a column that contained the
-# draft position as a number, but instead there was a column that contained the round
-# followed by the team followed by the draft position. I used a series of seperates to 
-# eventually create three seperate columns called team, round, and pick. I then changed
-# the pick column to numeric. This was SUPER important because I couldnt analyze any of the
+# A huge problem I had was the fact that there was not a column that 
+# contained the draft position as a number, but instead there was a column
+# that contained the round followed by the team followed by the draft position.
+# I used a series of seperates to eventually create three seperate columns 
+# called team, round, and pick. I then changed  the pick column to numeric.
+# This was SUPER important because I couldnt analyze any of the
 # tests affect on draft position unless I had a number value for draft position.
 
 combine_data <- combine_data %>% 
@@ -329,7 +330,8 @@ combine_data <- combine_data %>%
 write_rds(combine_data, "Athlete-Injuries/combine_data.rds")
 
 combine_data %>% 
-  pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+  pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, 
+                        shuttle), 
                names_to = "test", values_to = "result") %>% 
   group_by(test) %>% 
   summarise(average = mean(result, na.rm = TRUE), .groups = "drop")
@@ -338,29 +340,34 @@ combine_data %>%
 
 
    combine_data %>% 
-        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, 
+                              x3cone, shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
-        summarise(nfl_average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+        summarise(nfl_average = mean(result, na.rm = TRUE), 
+                  .groups = "drop") %>% 
         filter(test == "x40yd") -> nfl_average
    
-   # Testing how to find the NFL Average of a specific test. This was used in the
-   # 3rd tab - Team by Team.
+   # Testing how to find the NFL Average of a specific test. This was used
+   # in the 3rd tab - Team by Team.
       
       
       combine_data %>% 
-        select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos) %>% 
+        select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle,
+               team, pos) %>% 
         filter(team == "Pittsburgh Steelers",
                pos == "CB") %>% 
-        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, 
+                              x3cone, shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
         summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
         filter(test == "x40yd") %>% 
         full_join(nfl_average)
       
-      # Testing how to find the average of a specific event for a specific team. I then
-      # joined this with the nfl_average from above to check how that worked.
+      # Testing how to find the average of a specific event for a specific 
+      # team. I then joined this with the nfl_average from above to check
+      # how that worked.
       
    combine_data %>% 
         filter(pos %in% "DT") %>% 
@@ -420,7 +427,8 @@ cor(testingdata$x40yd, testingdata$broad_jump, method = "spearman")
         
   
   fit <- stan_glm(data = combine_data,
-                        formula = pick ~ x40yd + vertical + bench_reps + broad_jump + x3cone + shuttle - 1,
+                        formula = pick ~ x40yd + vertical + bench_reps + 
+                    broad_jump + x3cone + shuttle - 1,
                         family = gaussian(),
                         refresh = 0)
   

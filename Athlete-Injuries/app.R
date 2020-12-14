@@ -22,14 +22,16 @@ ui <- fluidPage(
     navbarPage(
         "NFL Draft Combine Results",
         tabPanel("Testing Correlation",
-                 titlePanel("Do results in some tests \ncorrelate with other tests?"),
+                 titlePanel("Do results in some tests \ncorrelate with other 
+                            tests?"),
                  
                  # In this section, you will be able to analyze the correlation
                  # between different events that take place at the NFL Combine.
                  # For example, does running a fast 40 yard dash mean that a
-                 # player will also likely have a good broad jump or vertical jump?
+                 # player will also likely have a good broad jump or vertical. 
                  # The more we can contextualize the results of the tests done 
-                 # at the NFL Combine, the better we can understand their affects.
+                 # at the NFL Combine, the better we can understand their 
+                 # affects.
                  
                  sidebarLayout(
                      sidebarPanel(
@@ -83,16 +85,17 @@ ui <- fluidPage(
                  ),
                  br(),
                  p("For the 40 yard dash, three cone drill, and shuttle,
-                       lower times arw better. For the ertical and broad jump,
+                       lower times are better. For the vertical and broad jump,
                        higher/farther jumps are better. Therefore, when you
                        plot a combination 40 yard dash, three cone drill, or 
                        shuttle together, a positive correlation means they have
-                       a relationship in which doing better on one indicates doing 
-                       better on another. When you plot broad jump and vertical 
-                       together, a positive correlation again means they have a 
-                       relationship in which doing better on one indicates doing 
-                       better on another. However, when plotting one of 40 yard
-                       dash, shuttle, or three cone drill with one of broad jump 
+                       a relationship in which doing better on one indicates 
+                       doing better on another. When you plot broad jump and 
+                       vertical together, a positive correlation again
+                       means they have a relationship in which doing 
+                       better on one indicates doing better on another.
+                       However, when plotting one of 40 yard dash,
+                       shuttle, or three cone drill with one of broad jump 
                        or vertical, a negative correlation will actually mean a 
                        relationship in which doing better on one indicates doing 
                        better on another."),
@@ -102,10 +105,11 @@ ui <- fluidPage(
                  titlePanel("How do test results affect draft position?"),
                  
                  # This is probably the most informative graph I have so far.
-                 # This graph allows you to filter by a specific position, and then
-                 # look at how the results of different events at each position affects
-                 # their draft position. Does a good 40 yard dash time mean more or
-                 # less than a good broad jump? This graph helps us look at that.
+                 # This graph allows you to filter by a specific position, and 
+                 # then look at how the results of different events at each 
+                 # position affects their draft position. Does a good 40 yard 
+                 # dash time mean more or less than a good broad jump?
+                 #This graph helps us look at that.
                  
                  sidebarLayout(
                    sidebarPanel(
@@ -148,10 +152,10 @@ ui <- fluidPage(
                    ),
                    ),
                  br(),
-                 p("This graph shows how much a specific test infleunces draft
+                 p("This graph shows how much a specific test influences draft
                    position. It is important to note that a lower draft position
-                   indicates a player getting drafted earlier and is thus better.
-                   For 40 yard dash, shuttle, and three cone drill, since
+                   indicates a player getting drafted earlier and is thus 
+                   better. For 40 yard dash, shuttle, and three cone drill since
                    lower times are better as well, a positive correlation means 
                    that doing better on these tests improves draft position. For
                    broad jump and vertical jump, since a higher/farther jump
@@ -167,9 +171,9 @@ ui <- fluidPage(
                  titlePanel("How do different teams tend to pick players?"),
                  
                  # This graph will plot NFL Team's tendencies to prioritize 
-                 # different events for different positions by plotting the results
-                 # for the players they draft at different positions with the 
-                 # NFL Average at these positions.
+                 # different events for different positions by plotting the 
+                 # results for the players they draft at different positions 
+                 # with the NFL Average at these positions.
                  
                  sidebarLayout(
                    sidebarPanel(
@@ -207,10 +211,11 @@ ui <- fluidPage(
                                  "Seattle Seahawks" = "Seattle Seahawks",
                                  "Tampa Bay Buccaneers" = "Tampa Bay Buccaneers",
                                  "Tennessee Titans" = "Tennessee Titans",
-                                 "Washington Football Team" = "Washington Redskins")),
+                                 "Washington Football Team" = 
+                                   "Washington Redskins")),
                      
-                     # This slider allows you to select which team you would like
-                     # to look at.
+                     # This slider allows you to select which team you would
+                     # like to look at.
                      
                      selectInput("position3",
                                  "Position",
@@ -279,8 +284,7 @@ ui <- fluidPage(
                                    "Fullback" = "FB",
                                    "Tight End" = "TE",
                                    "Wide Reciever" = "WR",
-                                   "Running Back" = "RB",
-                                   "Punter" = "P"))),
+                                   "Running Back" = "RB"))),
                    mainPanel(
                      gt_output("table"),
                      gt_output("table2"),
@@ -291,7 +295,10 @@ ui <- fluidPage(
                    ),
                    ),
                  br(),
-                 p("These tables give us a value for the affect a test has on
+                 p("NOTE: ERROR SHOWS UP FOR QBs FOR BENCH PRESS DUE TO NO
+                   QBs PERFORMING BENCH PRESS TEST."),
+                 br(),
+                 p("These tables give us a value for the effect a test has on
                    draft position. For 40 yard dash, shuttle, and three cone
                    drill, a positive value will tell us that doing better on
                    these tests improves draft position, with the magnitude 
@@ -303,7 +310,32 @@ ui <- fluidPage(
                    that since each test has different scales and ranges, 
                    we cannot simply use the magnitude given to compare
                    the tests affect and determine which tests have the largest 
-                   or smallest affect."),
+                   or smallest affect. However, we can use the values to 
+                   compare accross positions and see if a test is more or less
+                   important for one position than another."),
+                 p("For the 40 yard dash, the test is most important for 
+                   fullbacks, but this may be an outlier due to there not being
+                   many fullbacks in the NFL anymore. However, 40 yard dash is 
+                   more important for wide receivers, safeties, and running
+                   backs than other positions, which makes sense due to these 
+                   positions' need for speed."),
+                 p("Bench reps seems to be most important for safeties, 
+                 cornerbacks, running backs, and wide receiervs, which is 
+                 interesting due to these positions being more speed dominant. 
+                 It is also interesting to see lower values for offensive 
+                   linemen."),
+                 p("The shuttle and three cone drill, tests that evaluate for
+                   agility, seem to be most important for fullbacks again, but
+                   also for running backs, wide receivers, and strong safeties.
+                   This makes sense due to these positions need for 
+                   agility."),
+                 p("Both the vertical jump and broad jump values are positive
+                   for all positions, which is interesting as this seems to
+                   mean that doing better on these tests would hurt a player's
+                   draft position."),
+                 p("Based off of the values given in these tables, it seems
+                   that the results of the NFL Combine are most important
+                   for wide receivers, running backs, and safeties.")
         ),
         
         tabPanel("Understanding the Tests",
@@ -342,23 +374,24 @@ ui <- fluidPage(
                  br(),
                  p("SHUTTLE: This test evaluates an athletes ability to change
                    direction. Prospects start in a three point stance, with one
-                   hand on the ground, and then sprint 5 yards to the right, touch 
-                   a line, sprint 10 yards to the left, touch another 
+                   hand on the ground, and then sprint 5 yards to the right, 
+                  touch a line, sprint 10 yards to the left, touch another 
                    line, and then sprint 5 yards to the right again, finsihing
                    through the line they started on. Athletes may also be tested
                    starting out sprinting to the left instead of the right. A 
                    very agile athlete may run a shuttle in the 4.0 to 4.1 second
                    range, while less agile athletes will be more towards the 4.5
-                   to 4.6 and above range. Again, what constitutes a good shuttle
-                   time and bad shuttle time varies by position."),
+                   to 4.6 and above range. Again, what constitutes a good 
+                   shuttle time and bad shuttle time varies by position."),
                  br(),
-                 p("THREE CONE DRILL: This test evaluates an athletes ability to
-                   change direction. Prospects start in a three point stance, with
-                   one hand on the ground, and sprint around cones placed in an
-                   L shape. A very agile athlete may run the three cone drill
+                 p("THREE CONE DRILL: This test evaluates an athlete's ability 
+                   to change direction. Prospects start in a three point stance,
+                   with 1 hand on the ground, and sprint around cones placed in 
+                   an L shape. A very agile athlete may run the three cone drill
                    in around 6.6 to 6.7 seconds, while less agile athletes will
-                   be in the mid to upper 7 second range. Again, what constitutes
-                   a good and bad three cone drill time varies by position."),
+                   be in the mid to upper 7 second range. Again, what
+                   constitutes a good and bad three cone drill time varies 
+                   by position."),
                  br(),
                  p("BENCH PRESS: This test evaluates the strength of an athlete.
                    The prospect performs a bench press, doing as many reps as
@@ -375,7 +408,7 @@ ui <- fluidPage(
                  p("In the different tabs, the data is usually broken down
                    by the different positions an athlete plays. This is due to
                    the fact that each position has different roles and, in turn,
-                   has different expectation for performance levels in each of
+                   has different expectations for performance levels in each of
                    the tests. To better understand what each position means and
                    the implication of the position on the test results, see the
                    descriptions below."),
@@ -385,35 +418,36 @@ ui <- fluidPage(
                    handing it to a running back or throwing it to wide receivers.
                    Therefore, the results of the tests are usually less important
                    for quarterbacks, as their ability to throw a football is what
-                   is important. Due to this, you find high variation of athleticism
-                   and strength at the quarterback position, and usually these
-                   players have average test results for all tests."),
+                   is important. Due to this, you find high variation of
+                   athleticism and strength at the quarterback position, and 
+                   usually these players have average test results for all
+                   tests."),
                  br(),
-                 p("OFFENSIVE TACKLE and OFFENSIVE GUARD: These 
-                   positions make up the offensive line, responsible for blocking
+                 p("OFFENSIVE TACKLE and OFFENSIVE GUARD: These positions
+                   make up the offensive line, responsible for blocking
                    opposing players. These players are larger, usually over 300 
                    pounds, therefore the speed and athleticism of these positions
-                   are usually lower, but their strength is higher. Therefor, 
+                   are usually lower, but their strength is higher. Therefore, 
                    you can expect these players to make up some of the worst
                    speed and explosiveness test results (40 yard dash, etc.()),
                    but the best strength test results."),
                  br(),
-                 p("WIDE RECEIVER: This position is responsible for running routes
-                   and catching passses from the quarterback. Therefore, these 
+                 p("WIDE RECEIVER: This position runs routes and catches
+                   passses from the quarterback. Therefore, these 
                    players are usually very athletic and test at the top end of
                    almost all of the tests, except their strength may be 
                    average."),
-                 p("TIGHT END and FULLBACK: These positions have both the roles of 
-                 blocking andreceiving passes, depending on the situatioin. 
+                 p("TIGHT END and FULLBACK: These positions have both the roles 
+                 of blocking and receiving passes, depending on the situatioin. 
                  Therefore, these players are larger and contain the strength 
                  close to that of offensive linemen, but the speed, agility, and
-                 explosiveness close to that of the wide receiver. Therefore, 
+                 explosiveness close to that of a wide receiver. Therefore, 
                    expect their test results across the board to be average."),
                  br(),
                  p("RUNNING BACK: This position is responsible for running the
                    ball. Therefore, the players must be able to withstand many
                    hits and are usually strong athletes, but also must have
-                   good athleticism and explosiveness. There testing results 
+                   good athleticism and explosiveness. Their testing results 
                    are usually slightly worse than that of wide receivers, but
                    better than tight ends."),
                  br(),
@@ -434,13 +468,13 @@ ui <- fluidPage(
                  p("OUTSIDE LINEBACKER and INSIDE LINEBACKER: These players have
                    both the roles of stopping the run and the pass, and therefore
                    must be very strong and muscular, similar to a running back, 
-                   but must also have the athleticism close to that of a wide
-                   receiver. You can expect their test results to be average
+                   and must also have the athleticism close to that of a running
+                   back. You can expect their test results to be average
                    to above average."),
                  br(),
                  p("SAFETY AND CORNERBACK: This position is responsible for
                    covering the wide receivers. Due to this, these players
-                   must be the most athletic players on the field and therefor
+                   must be the most athletic players on the field and therefore
                    usually make up the fastest and most explosive test
                    results."),
                  br(),
@@ -457,30 +491,35 @@ ui <- fluidPage(
                  titlePanel("About"),
                  br(),
                  h1("NFL Combine Background"),
-                 p("Every year in February, the country's top college footballplayers attend the
-                   NFL Combine, where players are tested in different events such as the
-                   40 yard dash, broad jump, vertical jump, and more. NFL teams send scouts to
-                   evaluate players, and in April the NFL Draft occurs, where NFL teams take
-                   turns drafting players in 7 rounds. Players train for months and even
-                   years, often paying trainers large amounts of money in hopes of maximizing
-                   their performance at the combine, and in turn maximize their draft position. 
-                   But the question that not many people ask is, do the results of the NFL 
-                   Combine really affect a players draft position? Furthermore, what events
-                   have the largest affect at each position? Do different teams tend to 
-                   prioritize different events more than others? In reality, does the NFL
-                   Combine really even matter all that much?"),
+                 p("Every year in February, the country's top college football 
+                 players attend the
+                   NFL Combine, where players are tested in different events
+                   such as the 40 yard dash, broad jump, vertical jump,
+                   and more. NFL teams send scouts to evaluate players, and in 
+                   April the NFL Draft occurs, where NFL teams take
+                   turns drafting players in 7 rounds. Players train for
+                   months and even years, often paying trainers large amounts
+                   of money in hopes of maximizing their performance at the 
+                   combine, and in turn maximize their draft position. But the 
+                   question that not many people ask is, do the results
+                   of the NFL Combine really affect a players draft position? 
+                   Furthermore, what eventshave the largest affect at each
+                   position? Do different teams tend to prioritize different 
+                   events more than others? In reality, does the NFL Combine 
+                   really even matter all that much?"),
                  br(),
                  h1("About the Data"),
-                    p("The dataset was found on kaggle.com. The datasets were originally
-                      seperated by year, from 2013 to 2017, and by offense vs. defense. I therefore
-                      had to combine each seperate combine year and the two sides of the 
-                      ball. Since the data covers a 5 year span, the dataset contains
+                    p("The dataset was found on kaggle.com. The datasets were 
+                    originally seperated by year, from 2013 to 2017, and by 
+                    offense vs. defense. I therefore had to combine each 
+                    seperate combine year and the two sides of the ball. Since 
+                    the data covers a 5 year span, the dataset contains 
                       1027 observations."),
                  h1("About Me"),
-                 p("I am a junior at Harvard College. I am a chemistry concentrator with
-                 plans to enter the medical field. I play quartback for the
-                   varsity football team, so this specific data is very 
-                   intriguing."),
+                 p("I am a junior at Harvard College. I am a chemistry 
+                 concentrator with plans to enter the medical field. I play 
+                 quartback for the varsity football team, so this specific data
+                 is very intriguing."),
                  h5("The source code for this Shiny App can be found at my 
                     GitHub", 
                     a("HERE", 
@@ -510,17 +549,18 @@ server <- function(input, output) {
         drop_na(shuttle) %>% 
         select(x = !!input$test1, y = !!input$test2, pos)-> correlationdata
       
-      # Here I am filtering my data by the specific position that the viewer selects.
-      # I am also running drop_na on all columns, and selecting the two tests that
-      # the viewer chooses, assigning them to x and y. This allows me to 
-      # check the correlation.
+      # Here I am filtering my data by the specific position that the viewer 
+      # selects. I am also running drop_na on all columns, and selecting
+      # the two tests that the viewer chooses, assigning them to x and y. 
+      # This allows me to check the correlation.
  
       cor(correlationdata$x, correlationdata$y, method = "spearman") %>% 
         round(3) -> corr
       
-      # It took a lot of time for me to figure out how to plot the correlation of
-      # the different tests on my graph. I finally decided to fun the correlation between
-      # the two tests that are selected and then place the correlation in the subtitle.
+      # It took a lot of time for me to figure out how to plot the correlation 
+      # of the different tests on my graph. I finally decided to fun the 
+      # correlation between the two tests that are selected and then place the 
+      # correlation in the subtitle.
       
       combine_data %>% 
         filter(pos == input$position1) %>% 
@@ -530,16 +570,17 @@ server <- function(input, output) {
         geom_smooth(method = "lm", se = FALSE) +
             labs(x = input$test1, 
                  y = input$test2,
-                 title = paste("Relation of ", input$test1, " and ", input$test2),
+                 title = paste("Relation of ", input$test1, " and ", 
+                               input$test2),
                  subtitle = paste("r = ", corr)) +
         theme_minimal() 
       
-      # Here, I filtered the position to the position that the user selected. I then
-      # selected the tests they selected, and assigned them to choice and choicey. I
-      # also selected pos column. I graphed the selected tests against each other, 
-      # using geom_point and geom_smooth. I had to use select to assign the 
-      # chosen tests to different names so that I could use the slider to change the 
-      # ggplot.
+      # Here, I filtered the position to the position that the user selected. 
+      # I then selected the tests they selected, and assigned them to choice 
+      # and choicey. I also selected pos column. I graphed the selected tests
+      # against each other, using geom_point and geom_smooth. I had to use 
+      # select to assign the chosen tests to different names so that I could 
+      # use the slider to change the ggplot.
      
       
   
@@ -561,8 +602,8 @@ server <- function(input, output) {
       cor(correlationdata2$x, correlationdata2$pick, method = "spearman") %>% 
         round(3) -> corr2
       
-      # Above, I did the same steps to find the correlation so that I could place 
-      # it in the subtitle again.
+      # Above, I did the same steps to find the correlation so that I could 
+      # place it in the subtitle again.
       
        combine_data %>%
         filter(pos == input$position2) %>% 
@@ -600,11 +641,11 @@ server <- function(input, output) {
       
       # The above code was done so that I could calculate the average value
       # for each test for specific teams and positions. I used drop_na to get
-      # rid of any NAs, and I filtered by team and position selected in the slider. 
-      # I used select to rename the test4 slider to event so that I could take 
-      # the mean of it in the summarise. Using input$test4 in summarise gave problems.
-      # I assigned this value to teamaverage. This was done so that I could include 
-      # this value in the subtitle.
+      # rid of any NAs, and I filtered by team and position selected in the 
+      # slider. I used select to rename the test4 slider to event so that I 
+      # could take the mean of it in the summarise. Using input$test4 in
+      # summarise gave problems. I assigned this value to teamaverage. This was 
+      # done so that I could include this value in the subtitle.
       
       combine_data %>% 
         drop_na(x40yd) %>% 
@@ -627,28 +668,34 @@ server <- function(input, output) {
       
       combine_data %>% 
         filter(pos == input$position3) %>% 
-        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, 
+                              shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
-        summarise(`NFL Average` = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+        summarise(`NFL Average` = mean(result, na.rm = TRUE), 
+                  .groups = "drop") %>% 
         filter(test == input$test4) -> nfl_average
       
-      # Above, I filtered by the position that was select. I then pivoted my data
-      # so that I had a test column with the different tests and a result column
-      # with the results of the test. I then grouped by test and summarised to find
-      # the mean of each different test. I then filtered by the selected test. What this
-      # allowed me to do was get a value in a tibble for the average result of a 
-      # test for a specific position accross the NFL.
+      # Above, I filtered by the position that was select. I then pivoted my 
+      # data so that I had a test column with the different tests and a result
+      # column with the results of the test. I then grouped by test and 
+      # summarised to find the mean of each different test. I then filtered 
+      # by the selected test. What this allowed me to do was get a value in a 
+      # tibble for the average result of a test for a specific position 
+      # across the NFL.
       
       
       combine_data %>% 
-        select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos) %>% 
+        select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, 
+               pos) %>% 
         filter(team == input$team1,
                pos == input$position3) %>% 
-        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
+        pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, 
+                              x3cone, shuttle), 
                      names_to = "test", values_to = "result") %>% 
         group_by(test) %>% 
-        summarise(`Average for Team` = mean(result, na.rm = TRUE), .groups = "drop") %>% 
+        summarise(`Average for Team` = mean(result, na.rm = TRUE), 
+                  .groups = "drop") %>% 
         filter(test == input$test4) %>% 
         full_join(nfl_average) %>% 
         pivot_longer(cols = c(`Average for Team`, `NFL Average`),
@@ -656,25 +703,28 @@ server <- function(input, output) {
                      values_to = "Result") %>% 
         ggplot(aes(x = `Team vs. NFL`, y = Result, fill = `Team vs. NFL`)) +
         geom_col() +
-        labs(subtitle = paste("Team Average = ", teamaverage, " NFL Average = ", nflaverage)) +
+        labs(subtitle = paste("Team Average = ", teamaverage, " NFL Average = ", 
+                              nflaverage)) +
         scale_fill_manual(values = c("blue", "red")) +
         theme_minimal()
       
-      # I did the same steps as above first, but I preceeded the pivot_longer with
-      # a filter for selected team. This allowed me to get a tibble with the average
-      # result of a specific test for a specific position and team. I then joined this tibble
-      # with the whole NFL one I just created. I pivoted this joined data. This gave me
-      # a tibble with a column named Team vs. NFL that told me whether the result was for
-      # a specific team or across the NFL, and a second column that gave me the average result
-      # for a selected test. I then graphed these two values against each other so that
-      # their difference could be visualized.
+      # I did the same steps as above first, but I preceeded the pivot_longer 
+      # with a filter for selected team. This allowed me to get a tibble with 
+      # the average result of a specific test for a specific position and team.
+      #I then joined this tibble with the whole NFL one I just created. I 
+      # pivoted this joined data. This gave me a tibble with a column named 
+      # Team vs. NFL that told me whether the result was for a specific team 
+      # or across the NFL, and a second column that gave me the average result 
+      # for a selected test. I then graphed these two values against each other 
+      # so that their difference could be visualized.
        
      })
   
      output$table <- render_gt({
        
       combine_data_stan <- combine_data %>% 
-        select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+        select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, 
+               pos, pick) %>% 
          filter(pos == input$position4)
       
       set.seed(5)
@@ -688,14 +738,15 @@ server <- function(input, output) {
        as_gt()
      
      # I ran a model with pick dependent on 40 yard dash to see the affect that
-     # 40 yard dash had on draft position. I originally ran into a problem because I
-     # tried to run the model with all of the events in the formula. However, the
-     # different tests are correlated to eachother and therefore gave inaccurate values.
-     # Instead, I ran the model on each event seperately and plotted the tables 
-     # individually, which can be seen below.
+     # 40 yard dash had on draft position. I originally ran into a problem
+     # because I tried to run the model with all of the events in the formula. 
+     # However, the different tests are correlated to eachother and therefore 
+     # gave inaccurate values. Instead, I ran the model on each event 
+     # seperately and plotted the tables individually, which can be seen below.
       
       #fit <- stan_glm(data = combine_data_stan,
-       #               formula = pick ~ x40yd + vertical + bench_reps + broad_jump + x3cone + shuttle - 1,
+       #               formula = pick ~ x40yd + vertical + bench_reps + 
+     # broad_jump + x3cone + shuttle - 1,
         #              family = gaussian(),
          #             refresh = 0)
       
@@ -706,7 +757,8 @@ server <- function(input, output) {
      output$table2 <- render_gt({
        
        combine_data_stan <- combine_data %>% 
-         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
+                team, pos, pick) %>% 
          filter(pos == input$position4)
        
        set.seed(6)
@@ -721,7 +773,9 @@ server <- function(input, output) {
      output$table3 <- render_gt({
        
        combine_data_stan <- combine_data %>% 
-         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
+                team, pos, pick) %>% 
+         drop_na(bench_reps) %>% 
          filter(pos == input$position4)
        
        set.seed(4)
@@ -736,7 +790,8 @@ server <- function(input, output) {
      output$table4 <- render_gt({
        
        combine_data_stan <- combine_data %>% 
-         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
+                team, pos, pick) %>% 
          filter(pos == input$position4)
        
        set.seed(5)
@@ -751,7 +806,8 @@ server <- function(input, output) {
      output$table5 <- render_gt({
        
        combine_data_stan <- combine_data %>% 
-         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>%  
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
+                team, pos, pick) %>%  
          filter(pos == input$position4)
        
        set.seed(11)
@@ -766,7 +822,8 @@ server <- function(input, output) {
      output$table6 <- render_gt({
        
        combine_data_stan <- combine_data %>% 
-         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>%  
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
+                team, pos, pick) %>%  
          filter(pos == input$position4)
        
        set.seed(12)
