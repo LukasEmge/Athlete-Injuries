@@ -327,7 +327,7 @@ combine_data$pick <- as.numeric(as.character(combine_data$pick))
 combine_data <- combine_data %>% 
   drop_na(pick)
 
-write_rds(combine_data, "Athlete-Injuries/combine_data.rds")
+write_rds(combine_data, "NFL_Combine/combine_data.rds")
 
 combine_data %>% 
   pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, 
