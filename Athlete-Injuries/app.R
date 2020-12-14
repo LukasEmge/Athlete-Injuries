@@ -150,7 +150,7 @@ ui <- fluidPage(
                  br(),
                  p("This graph shows how much a specific test infleunces draft
                    position. It is important to note that a lower draft position
-                   indicated a player getting drafted earlier and is thus better.
+                   indicates a player getting drafted earlier and is thus better.
                    For 40 yard dash, shuttle, and three cone drill, since
                    lower times are better as well, a positive correlation means 
                    that doing better on these tests improves draft position. For
@@ -158,7 +158,7 @@ ui <- fluidPage(
                    is better, a negative correlation indicates that doing
                    better on these tests improves draft position. For bench 
                    press, since more reps is better, a negative correlation 
-                   indicated that performing better on this test improves draft
+                   indicates that performing better on this test improves draft
                    position."),
                  
                  
@@ -246,10 +246,13 @@ ui <- fluidPage(
                    # analyze.
                    
                      mainPanel(
-                       plotOutput("distPlot3"),
-                       plotOutput("distPlot4")
-                     )
-                   )
+                       plotOutput("distPlot3")
+                     ),
+                 ),
+                 p("Above, you can view the draft tendencies of a specific 
+                   team by comparing the test performance of the players they
+                   draft to the average performance for a player at that 
+                   position throughout the draft pool."),
                  ),
         
         
@@ -285,8 +288,22 @@ ui <- fluidPage(
                      gt_output("table4"),
                      gt_output("table5"),
                      gt_output("table6")
-                   )
-                   )
+                   ),
+                   ),
+                 br(),
+                 p("These tables give us a value for the affect a test has on
+                   draft position. For 40 yard dash, shuttle, and three cone
+                   drill, a positive value will tell us that doing better on
+                   these tests improves draft position, with the magnitude 
+                   representing how large the affect is. For broad jump and
+                   vertical jump, since a higher/farther jump is better, a 
+                   negative value will mean that doing better on these
+                   tests imoroves draft position, with the magnitude again 
+                   representing how large the affect is. It is important to note
+                   that since each test has different scales and ranges, 
+                   we cannot simply use the magnitude given to compare
+                   the tests affect and determine which tests have the largest 
+                   or smallest affect."),
         ),
         
         tabPanel("Understanding the Tests",
@@ -653,19 +670,7 @@ server <- function(input, output) {
       # their difference could be visualized.
        
      })
-    
-   # output$distPlot4 <- renderPlot({
-    #   combine_data %>% 
-     #   pivot_longer(cols = c(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle), 
-      #               names_to = "test", values_to = "result") %>% 
-       # group_by(test) %>% 
-        #summarise(average = mean(result, na.rm = TRUE), .groups = "drop") %>% 
-        #filter(test == input$test4) %>% 
-        #ggplot(aes(x = test, y = average)) +
-        #geom_col()
-       
-      #})
-     
+  
      output$table <- render_gt({
        
       combine_data_stan <- combine_data %>% 
@@ -716,7 +721,7 @@ server <- function(input, output) {
      output$table3 <- render_gt({
        
        combine_data_stan <- combine_data %>% 
-         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, Team, pos, pick) %>% 
+         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, pos, pick) %>% 
          filter(pos == input$position4)
        
        set.seed(4)
@@ -774,58 +779,6 @@ server <- function(input, output) {
          as_gt() })
      
 
-       
-    
-    # 
-    # output$distPlot6 <- renderPlot({
-    #   combine_data %>% 
-    #     ggplot(aes(x = vertical, y = x3cone, color = pos)) + 
-    #     geom_point() + 
-    #     labs(x  = "Vertical (Inches)",
-    #          y = "3 Cone Drill Time (Sec.)",
-    #          title = "Relation of 3 Cone Drill to Vertical")
-    #   
-    # })
-    # 
-    # output$distPlot7 <- renderPlot({
-    #   combine_data %>% 
-    #     ggplot(aes(x = vertical, y = shuttle, color = pos)) + 
-    #     geom_point() + 
-    #     labs(x = "Vertical (Inches)",
-    #          y = "Shuttle (Sec.)",
-    #          title = "Relation of Shuttle to Vertical")
-    #   
-    # })
-    # 
-    # output$distPlot8 <- renderPlot({
-    #   combine_data %>% 
-    #     ggplot(aes(x = broad_jump, y = x3cone, color = pos)) + 
-    #     geom_point() + 
-    #     labs(x = "Broad Jump (Inches)", 
-    #          y = "3 Cone Drill (Sec.)",
-    #          title = "Relation of 3 Cone Drill to Broad Jump")
-    #   
-    # })
-    # 
-    # output$distPlot9 <- renderPlot({
-    #   combine_data %>% 
-    #     ggplot(aes(x = broad_jump, y = shuttle, color = pos)) + 
-    #     geom_point() + 
-    #     labs(x = "Broad Jump (Inches))", 
-    #          y = "Shuttle (Sec.)",
-    #          title = "Relation of Shuttle to Broad Jump")
-    #   
-    # })
-    # 
-    # output$distPlot10 <- renderPlot({
-    #   combine_data %>% 
-    #     ggplot(aes(x = x3cone, y = shuttle, color = pos)) + 
-    #     geom_point() + 
-    #     labs(x = "3 Cone Drill (Sec.)", 
-    #          y = "Shuttle (Sec.)",
-    #          title = "Relation of Shuttle to 3 Cone Drill")
-    #   
-    # })
     
 }
 # Run the application
