@@ -10,11 +10,13 @@
 library(shiny)
 library(tidyverse)
 library(shinythemes)
-library(gtsummary)
-library(gt)
 library(broom.mixed)
+library(rstanarm)
+library(gt)
+
 
 combine_data <- read_rds("combine_data.rds")
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -262,41 +264,54 @@ ui <- fluidPage(
         
         
         tabPanel("Model",
-                 titlePanel("How do test results affect draft position?"),
+                 titlePanel("How do test results affect a safety's 
+                            draft position?"),
                  
                  # This will run the model to tell us how different events 
                  # affect draft position for the specific positions in the NFL.
                  
-                 sidebarLayout(
-                     sidebarPanel(
-                         h4(strong("Select Position and Test")),
-                         selectInput("position4",
-                                     "Position",
-                                     c("Defensive End" = "DE",
-                                       "Defensive Tackle" = "DT",
-                                       "Outside Linebacker" = "OLB",
-                                       "Strong Safety" = "SS",
-                                       "Free Safety" = "FS",
-                                       "Cornerback" = "CB",
-                                       "Quarterback" = "QB",
-                                       "Offensive Tackle" = "OT",
-                                       "Offensive Guard" = "OG",
-                                       "Fullback" = "FB",
-                                       "Tight End" = "TE",
-                                       "Wide Reciever" = "WR",
-                                       "Running Back" = "RB"))),
+                 # sidebarLayout(
+                     # sidebarPanel(
+                     #     h4(strong("Select Position and Test")),
+                     #     selectInput("position4",
+                     #                 "Position",
+                     #                 c("Defensive End" = "DE",
+                     #                   "Defensive Tackle" = "DT",
+                     #                   "Outside Linebacker" = "OLB",
+                     #                   "Strong Safety" = "SS",
+                     #                   "Free Safety" = "FS",
+                     #                   "Cornerback" = "CB",
+                     #                   "Quarterback" = "QB",
+                     #                   "Offensive Tackle" = "OT",
+                     #                   "Offensive Guard" = "OG",
+                     #                   "Fullback" = "FB",
+                     #                   "Tight End" = "TE",
+                     #                   "Wide Reciever" = "WR",
+                     #                   "Running Back" = "RB"))),
+                 
+                 
+                 # I originally wanted you to be able to filter by position,
+                 # but I was getting an error with the gert package. I worked
+                 # for a really long time, but could not solve this. Instead, I
+                 # had to great the gt table outside of the app.R and then put 
+                 # the images inside, and thus the drop down letting you 
+                 # select the position was no longer needed. 
+                 
                      mainPanel(
-                         gt_output("table"),
-                         gt_output("table2"),
-                         gt_output("table3"),
-                         gt_output("table4"),
-                         gt_output("table5"),
-                         gt_output("table6")
+                         imageOutput("tableimage"),
+                         imageOutput("tableimage2"),
+                         imageOutput("tableimage3"),
+                         imageOutput("tableimage4"),
+                         imageOutput("tableimage5"),
+                         imageOutput("tableimage6"),
+                         # gt_output("table"),
+                         # gt_output("table2"),
+                         # gt_output("table3"),
+                         # gt_output("table4"),
+                         # gt_output("table5"),
+                         # gt_output("table6")
                      ),
-                 ),
-                 br(),
-                 p("NOTE: ERROR SHOWS UP FOR QBs FOR BENCH PRESS DUE TO NO
-                   QBs PERFORMING BENCH PRESS TEST."),
+                 # ),
                  br(),
                  p("These tables give us a value for the effect a test has on
                    draft position. For 40 yard dash, shuttle, and three cone
@@ -307,35 +322,30 @@ ui <- fluidPage(
                    negative value will mean that doing better on these
                    tests imoroves draft position, with the magnitude again 
                    representing how large the affect is. It is important to note
-                   that since each test has different scales and ranges, 
-                   we cannot simply use the magnitude given to compare
-                   the tests affect and determine which tests have the largest 
-                   or smallest affect. However, we can use the values to 
-                   compare accross positions and see if a test is more or less
-                   important for one position than another."),
-                 p("For the 40 yard dash, the test is most important for 
-                   fullbacks, but this may be an outlier due to there not being
-                   many fullbacks in the NFL anymore. However, 40 yard dash is 
-                   more important for wide receivers, safeties, and running
-                   backs than other positions, which makes sense due to these 
-                   positions' need for speed."),
-                 p("Bench reps seems to be most important for safeties, 
-                 cornerbacks, running backs, and wide receiervs, which is 
-                 interesting due to these positions being more speed dominant. 
-                 It is also interesting to see lower values for offensive 
-                   linemen."),
-                 p("The shuttle and three cone drill, tests that evaluate for
-                   agility, seem to be most important for fullbacks again, but
-                   also for running backs, wide receivers, and strong safeties.
-                   This makes sense due to these positions need for 
-                   agility."),
-                 p("Both the vertical jump and broad jump values are positive
-                   for all positions, which is interesting as this seems to
-                   mean that doing better on these tests would hurt a player's
-                   draft position."),
-                 p("Based off of the values given in these tables, it seems
-                   that the results of the NFL Combine are most important
-                   for wide receivers, running backs, and safeties.")
+                   that we only analyzed the safety position."),
+                 p("It is best to compare the 40 yard dash, shuttle, and three 
+                 cone drill together as these tests fall on a similar scale.
+                 For the 40 yard dash, the test gives a beta value of 26, which
+                   and a 95% confidence interval of 22 to 29. The three cone 
+                   drill gives a beta value of 17, with a 95% confidence interval 
+                  of  13 to 20, and the shuttle gives us a beta  value of 27, 
+                with the 95% confidence interval from 21 to 32. These values tell
+                   us that doing better at any of the three tests is correlated
+                   with a better draft position, and that the effect is largest
+                   for shuttle, and smallest for three cone drill."),
+                 p("We can also compare broad and vertical jump. Vertical
+                   jump has a beta value of 3.1 with a 95% confidence interval 
+                   of 2.6 to 3.7, while broad jump has a beta value of .93, with 
+                   a 95% confidence interval of .77 to 1.1. This data is 
+                   interesting because it seems to tell us that doing better
+                   at broad or vertical jump correlates with a later draft
+                   position, so more analysis should go into this before
+                   conclusions are drawn."),
+                 p("Bench reps have a beta value of 6.8, with the 95% confidence
+                   interval of 5.5 to 8.0 This seems to tell us that 
+                   performing better on the bench press also correlates with
+                   a later draft position."),
+                 
         ),
         
         tabPanel("Understanding the Tests",
@@ -729,122 +739,157 @@ server <- function(input, output) {
         
     })
     
-    output$table <- render_gt({
-        
-        combine_data_stan <- combine_data %>% 
-            select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, team, 
-                   pos, pick) %>% 
-            filter(pos == input$position4)
-        
-        set.seed(5)
-        fit_40 <- stan_glm(data = combine_data_stan,
-                           formula = pick ~ x40yd - 1,
-                           family = gaussian(),
-                           refresh = 0)
-        
-        
-        tbl_regression(fit_40, intercept = FALSE) %>% 
-            as_gt()
-        
-        # I ran a model with pick dependent on 40 yard dash to see the affect that
-        # 40 yard dash had on draft position. I originally ran into a problem
-        # because I tried to run the model with all of the events in the formula. 
-        # However, the different tests are correlated to eachother and therefore 
-        # gave inaccurate values. Instead, I ran the model on each event 
-        # seperately and plotted the tables individually, which can be seen below.
-        
-        #fit <- stan_glm(data = combine_data_stan,
-        #               formula = pick ~ x40yd + vertical + bench_reps + 
-        # broad_jump + x3cone + shuttle - 1,
-        #              family = gaussian(),
-        #             refresh = 0)
-        
-        #tbl_regression(fit, intercept = FALSE) %>% 
-        # as_gt()
-    })
+    # output$table <- render_gt({
+    # 
+    #     combine_data_stan <- combine_data %>%
+    #         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle,
+    #                team, pos, pick) %>%
+    #         filter(pos == input$position4)
+    #     
+    #     set.seed(6)
+    #     fit_vert <- stan_glm(data = combine_data_stan,
+    #                          formula = pick ~ x40yd - 1,
+    #                          family = gaussian(),
+    #                          refresh = 0)
+    #     
+    #     tbl_regression(fit_vert, intercept = FALSE) %>% 
+    #         as_gt()
+    # 
+    #     # I ran a model with pick dependent on 40 yard dash to see the affect that
+    #     # 40 yard dash had on draft position. I originally ran into a problem
+    #     # because I tried to run the model with all of the events in the formula.
+    #     # However, the different tests are correlated to eachother and therefore
+    #     # gave inaccurate values. Instead, I ran the model on each event
+    #     # seperately and plotted the tables individually, which can be seen below.
+    # 
+    #     #fit <- stan_glm(data = combine_data_stan,
+    #     #               formula = pick ~ x40yd + vertical + bench_reps +
+    #     # broad_jump + x3cone + shuttle - 1,
+    #     #              family = gaussian(),
+    #     #             refresh = 0)
+    # 
+    #     #tbl_regression(fit, intercept = FALSE) %>%
+    #     # as_gt()
+    # })
+    # 
+    # output$table2 <- render_gt({
+    # 
+    #     combine_data_stan <- combine_data %>%
+    #         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle,
+    #                team, pos, pick) %>%
+    #         filter(pos == input$position4)
+    # 
+    #     set.seed(6)
+    #     fit_vert <- stan_glm(data = combine_data_stan,
+    #                          formula = pick ~ vertical - 1,
+    #                          family = gaussian(),
+    #                          refresh = 0)
+    # 
+    #     tbl_regression(fit_vert, intercept = FALSE) %>%
+    #         as_gt() })
+    # 
+    # output$table3 <- render_gt({
+    # 
+    #     combine_data_stan <- combine_data %>%
+    #         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle,
+    #                team, pos, pick) %>%
+    #         drop_na(bench_reps) %>%
+    #         filter(pos == input$position4)
+    # 
+    #     set.seed(4)
+    #     fit_bench <- stan_glm(data = combine_data_stan,
+    #                           formula = pick ~ bench_reps - 1,
+    #                           family = gaussian(),
+    #                           refresh = 0)
+    # 
+    #     tbl_regression(fit_bench, intercept = FALSE) %>%
+    #         as_gt() })
+    # 
+    # output$table4 <- render_gt({
+    # 
+    #     combine_data_stan <- combine_data %>%
+    #         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle,
+    #                team, pos, pick) %>%
+    #         filter(pos == input$position4)
+    # 
+    #     set.seed(5)
+    #     fit_broad <- stan_glm(data = combine_data_stan,
+    #                           formula = pick ~ broad_jump - 1,
+    #                           family = gaussian(),
+    #                           refresh = 0)
+    # 
+    #     tbl_regression(fit_broad, intercept = FALSE) %>%
+    #         as_gt() })
+    # 
+    # output$table5 <- render_gt({
+    # 
+    #     combine_data_stan <- combine_data %>%
+    #         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle,
+    #                team, pos, pick) %>%
+    #         filter(pos == input$position4)
+    # 
+    #     set.seed(11)
+    #     fit_3cone <- stan_glm(data = combine_data_stan,
+    #                           formula = pick ~ x3cone - 1,
+    #                           family = gaussian(),
+    #                           refresh = 0)
+    # 
+    #     tbl_regression(fit_3cone, intercept = FALSE) %>%
+    #         as_gt() })
+    # 
+    # output$table6 <- render_gt({
+    # 
+    #     combine_data_stan <- combine_data %>%
+    #         select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle,
+    #                team, pos, pick) %>%
+    #         filter(pos == input$position4)
+    # 
+    #     set.seed(12)
+    #     fit_shuttle <- stan_glm(data = combine_data_stan,
+    #                             formula = pick ~ shuttle - 1,
+    #                             family = gaussian(),
+    #                             refresh = 0)
+    # 
+    #     tbl_regression(fit_shuttle, intercept = FALSE) %>%
+    #         as_gt() })
     
-    output$table2 <- render_gt({
+    output$tableimage <- renderImage({
         
-        combine_data_stan <- combine_data %>% 
-            select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
-                   team, pos, pick) %>% 
-            filter(pos == input$position4)
+        list(src = "table1.png")
         
-        set.seed(6)
-        fit_vert <- stan_glm(data = combine_data_stan,
-                             formula = pick ~ vertical - 1,
-                             family = gaussian(),
-                             refresh = 0)
-        
-        tbl_regression(fit_vert, intercept = FALSE) %>% 
-            as_gt() })
-    
-    output$table3 <- render_gt({
-        
-        combine_data_stan <- combine_data %>% 
-            select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
-                   team, pos, pick) %>% 
-            drop_na(bench_reps) %>% 
-            filter(pos == input$position4)
-        
-        set.seed(4)
-        fit_bench <- stan_glm(data = combine_data_stan,
-                              formula = pick ~ bench_reps - 1,
-                              family = gaussian(),
-                              refresh = 0)
-        
-        tbl_regression(fit_bench, intercept = FALSE) %>% 
-            as_gt() })
-    
-    output$table4 <- render_gt({
-        
-        combine_data_stan <- combine_data %>% 
-            select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
-                   team, pos, pick) %>% 
-            filter(pos == input$position4)
-        
-        set.seed(5)
-        fit_broad <- stan_glm(data = combine_data_stan,
-                              formula = pick ~ broad_jump - 1,
-                              family = gaussian(),
-                              refresh = 0)
-        
-        tbl_regression(fit_broad, intercept = FALSE) %>% 
-            as_gt() })
-    
-    output$table5 <- render_gt({
-        
-        combine_data_stan <- combine_data %>% 
-            select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
-                   team, pos, pick) %>%  
-            filter(pos == input$position4)
-        
-        set.seed(11)
-        fit_3cone <- stan_glm(data = combine_data_stan,
-                              formula = pick ~ x3cone - 1,
-                              family = gaussian(),
-                              refresh = 0)
-        
-        tbl_regression(fit_3cone, intercept = FALSE) %>% 
-            as_gt() })
-    
-    output$table6 <- render_gt({
-        
-        combine_data_stan <- combine_data %>% 
-            select(x40yd, vertical, bench_reps, broad_jump, x3cone, shuttle, 
-                   team, pos, pick) %>%  
-            filter(pos == input$position4)
-        
-        set.seed(12)
-        fit_shuttle <- stan_glm(data = combine_data_stan,
-                                formula = pick ~ shuttle - 1,
-                                family = gaussian(),
-                                refresh = 0)
-        
-        tbl_regression(fit_shuttle, intercept = FALSE) %>% 
-            as_gt() })
+    }, deleteFile = FALSE)
     
     
+    output$tableimage2 <- renderImage({
+        
+        list(src = "table2.png")
+        
+    }, deleteFile = FALSE)
+    
+    output$tableimage3 <- renderImage({
+        
+        list(src = "table3.png")
+        
+    }, deleteFile = FALSE)
+    
+    output$tableimage4 <- renderImage({
+        
+        list(src = "table4.png")
+        
+    }, deleteFile = FALSE)
+    
+    
+    output$tableimage5 <- renderImage({
+        
+        list(src = "table5.png")
+        
+    }, deleteFile = FALSE)
+    
+    output$tableimage6 <- renderImage({
+        
+        list(src = "table6.png")
+        
+    }, deleteFile = FALSE)
     
 }
 # Run the application
